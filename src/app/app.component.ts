@@ -8,22 +8,16 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent implements OnInit {
   loadedPosts = [];
+  url = 'https://chronoplanner.firebaseio.com/';
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {}
 
   onCreatePost(postData: { title: string; content: string }) {
-    // Send Http request
-    // asdf
-    this.http
-      .post(
-        'https://ng-complete-guide-c56d3.firebaseio.com/posts.json',
-        postData
-      )
-      .subscribe(responseData => {
-        console.log(responseData);
-      });
+    this.http.post(this.url + '/posts.json', JSON.stringify(postData)).subscribe( (resp: Response) => {
+      console.log('resp', resp);
+    });
   }
 
   onFetchPosts() {
