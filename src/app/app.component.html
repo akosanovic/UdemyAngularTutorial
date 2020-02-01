@@ -37,16 +37,20 @@
   <!-- Display Posts Sections -->
   <div class="row">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
-      <p *ngIf="loadedPosts.length == 0; else hasPosts" >No posts available!</p>
+      <p *ngIf="isLoading">Loading...</p>
 
-      <ng-template  #hasPosts >
-        <ul class="list-group">
-          <li class="list-group-item" *ngFor="let post of loadedPosts">
-            <h3>{{post.title}}</h3>
-            <p>{{post.content}}</p>
-          </li>
-        </ul>
-      </ng-template>
+      <ng-container *ngIf="!isLoading">
+        <p *ngIf="loadedPosts.length == 0; else hasPosts" >No posts available!</p>
+
+        <ng-template  #hasPosts >
+          <ul class="list-group">
+            <li class="list-group-item" *ngFor="let post of loadedPosts">
+              <h3>{{post.title}}</h3>
+              <p>{{post.content}}</p>
+            </li>
+          </ul>
+        </ng-template>
+      </ng-container>
 
     </div>
   </div>

@@ -11,6 +11,7 @@ import { Post } from './post.model';
 export class AppComponent implements OnInit {
   loadedPosts: Post[] = [];
   readonly POST_URL = 'https://chronoplanner.firebaseio.com/posts.json';
+  isLoading = false;
 
   constructor(private http: HttpClient) {}
 
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit {
   }
 
   _fetchPosts() {
+    this.isLoading = true;
     this.http.get<{[keyId: string]: Post}>(this.POST_URL).pipe( map ((fbPayload) => {
       const postsArray: Post[] = [];
 
@@ -44,6 +46,7 @@ export class AppComponent implements OnInit {
       return postsArray;
 
     })).subscribe( (posts: Post[]) => {
+      this.isLoading = false;
       this.loadedPosts = posts;
     });
   }
