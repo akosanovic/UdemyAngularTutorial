@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Post } from './post.model';
+import { PostAPI } from './posts.api';
 
 @Component({
   selector: 'app-root',
@@ -10,19 +11,18 @@ import { Post } from './post.model';
 })
 export class AppComponent implements OnInit {
   loadedPosts: Post[] = [];
-  readonly POST_URL = 'https://chronoplanner.firebaseio.com/posts.json';
   isLoading = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private postsApi: PostAPI) {}
 
   ngOnInit() {
     this._fetchPosts();
   }
 
-  onCreatePost(postData: { title: string; content: string }) {
-    this.http.post<{name: string}>(this.POST_URL, JSON.stringify(postData)).subscribe( (resp) => {
-      console.log('resp', resp);
-    });
+  onCreatePost(postData: Post) {
+   this.postsApi.createPost(postData).subscribe( () => {
+     this._fetchPosts();
+   });
   }
 
   onFetchPosts() {
@@ -30,24 +30,17 @@ export class AppComponent implements OnInit {
   }
 
   onClearPosts() {
-    // Send Http request
+    this.postsApi.deletePosts().subscribe( () => {
+      this._fetchPosts();
+    });
   }
 
   _fetchPosts() {
     this.isLoading = true;
-    this.http.get<{[keyId: string]: Post}>(this.POST_URL).pipe( map ((fbPayload) => {
-      const postsArray: Post[] = [];
-
-      for (const key in fbPayload) {
-        if (fbPayload.hasOwnProperty(key)) {
-          postsArray.push({...fbPayload[key], id: key });
-        }
-      }
-      return postsArray;
-
-    })).subscribe( (posts: Post[]) => {
+    this.postsApi.getPosts().subscribe( (posts: Post[]) => {
       this.isLoading = false;
       this.loadedPosts = posts;
     });
+
   }
 }
