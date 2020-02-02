@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { PostAPI } from './posts.api';
 import { Post } from '../models/post.model';
@@ -16,7 +16,7 @@ export class PostsService {
 
   }
 
-  getPosts(): Observable<Post[]> {
+  getPosts() {
     return this.postApi.getPosts().pipe( map((fbPayload) => {
       const postsArray: Post[] = [];
 
@@ -26,18 +26,22 @@ export class PostsService {
         }
       }
       return postsArray;
-
     }));
   }
 
   createPosts(postData: Post) {
     return this.postApi.createPost(postData).subscribe( () => {
-
-      // _Fetch Data
+      // fetch posts
+      this.getPosts();
     },
     (err: Error) => {
       return this.errorHandler$.next(err.message);
     });
   }
 
+  deletePosts() {
+    return this.postApi.deletePosts().pipe(map( () => {
+      this.getPosts();
+    }));
+  }
 }

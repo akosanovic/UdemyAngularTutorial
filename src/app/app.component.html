@@ -1,6 +1,10 @@
 <div class="container">
   <div class="row">
 
+    <!--
+      Each | async pipe creates observable
+      Reduce using unnecessary observables and just pass reference
+    -->
     <div class="alert alert-danger" *ngIf="(errorMessage$ | async) as errorMessage">
       <h3>Error Occurred</h3>
       <p> {{errorMessage}} </p>

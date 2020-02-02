@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
     ) {}
 
   ngOnInit() {
+    // No need to unsubscribe when using `| async` pipe in the template
     this.errorMessage$ = this.postsService.errorHandler;
 
     this._fetchPosts();
@@ -35,7 +36,7 @@ export class AppComponent implements OnInit {
   }
 
   onClearPosts() {
-    this.postsApi.deletePosts().subscribe( () => {
+    this.postsService.deletePosts().subscribe(() => {
       this._fetchPosts();
     });
   }
