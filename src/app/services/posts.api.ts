@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Post } from './post.model';
-import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { Post } from '../models/post.model';
 
 @Injectable()
 export class PostAPI {
@@ -10,18 +9,7 @@ export class PostAPI {
   constructor(private http: HttpClient) {}
 
   getPosts() {
-   return this.http.get<{[keyId: string]: Post}>(this.POST_URL)
-    .pipe( map((fbPayload) => {
-      const postsArray: Post[] = [];
-
-      for (const key in fbPayload) {
-        if (fbPayload.hasOwnProperty(key)) {
-          postsArray.push({...fbPayload[key], id: key });
-        }
-      }
-      return postsArray;
-
-    }));
+   return this.http.get<{[keyId: string]: Post}>(this.POST_URL);
   }
 
   createPost(postData: Post): Observable<{name: string}> {
