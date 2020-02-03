@@ -12,8 +12,8 @@ export class PostsService {
   readonly errorHandler$: Subject<string> = new Subject();
   errorHandler = this.errorHandler$.asObservable();
 
-  readonly postsSubj$ = new Subject();
-  posts$ = this.postsSubj$.asObservable();
+  readonly postsSubj$: Subject<Post[]> = new Subject();
+  posts$: Observable<Post[]> = this.postsSubj$.asObservable();
 
   constructor(private postApi: PostAPI) {
 
@@ -44,8 +44,6 @@ export class PostsService {
   }
 
   deletePosts() {
-    return this.postApi.deletePosts().pipe(map( () => {
-      this.getPosts();
-    }));
+    return this.postApi.deletePosts();
   }
 }
