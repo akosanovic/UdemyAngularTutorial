@@ -12,12 +12,15 @@ export class PostsService {
   readonly errorHandler$: Subject<string> = new Subject();
   errorHandler = this.errorHandler$.asObservable();
 
+  readonly postsSubj$ = new Subject();
+  posts$ = this.postsSubj$.asObservable();
+
   constructor(private postApi: PostAPI) {
 
   }
 
   getPosts() {
-    return this.postApi.getPosts().pipe( map((fbPayload) => {
+    this.postApi.getPosts().pipe( map((fbPayload) => {
       const postsArray: Post[] = [];
 
       for (const key in fbPayload) {
@@ -25,8 +28,9 @@ export class PostsService {
           postsArray.push({...fbPayload[key], id: key });
         }
       }
-      return postsArray;
-    }));
+      // return postsArray;
+      this.postsSubj$.next(postsArray);
+    })).subscribe();
   }
 
   createPosts(postData: Post) {

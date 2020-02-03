@@ -15,16 +15,19 @@ export class AppComponent implements OnInit {
   isLoading = false;
   errorMessage$ = null;
 
-  constructor(private postsApi: PostAPI,
-              private postsService: PostsService,
+  constructor(private postsService: PostsService,
 
     ) {}
 
   ngOnInit() {
     // No need to unsubscribe when using `| async` pipe in the template
     this.errorMessage$ = this.postsService.errorHandler;
-
     this._fetchPosts();
+
+    this.postsService.posts$.subscribe( (posts: Post[]) => {
+      console.log('fetch ', posts);
+      this.loadedPosts = posts;
+    });
   }
 
   onCreatePost(postData: Post) {
@@ -43,13 +46,12 @@ export class AppComponent implements OnInit {
 
   _fetchPosts() {
     this.isLoading = true;
-    this.postsService.getPosts().subscribe( (posts: Post[]) => {
-      this.isLoading = false;
-      this.loadedPosts = posts;
-    },
-    (err: Error) => {
-      this.postsService.errorHandler$.next(err.message);
-    });
+    this.postsService.getPosts();
+
+    this.isLoading = false;
+    // (err: Error) => {
+    //   this.postsService.errorHandler$.next(err.message);
+    // });
 
   }
 }
