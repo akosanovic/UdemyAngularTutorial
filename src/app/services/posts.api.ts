@@ -23,11 +23,11 @@ export class PostAPI {
         observe: 'events'
       }
     ).pipe( tap( ((event: HttpEvent<any>) => {
-      if(event.type === HttpEventType.Response) {
+      if (event.type === HttpEventType.Response) {
         console.log('event response, full response including body was received');
         this.getPosts();
-      }
-       else if (event.type === HttpEventType.Sent) {
+
+      } else if (event.type === HttpEventType.Sent) {
         console.log('event request was sent');
       }
 
